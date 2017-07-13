@@ -1,0 +1,28 @@
+Package: RMST
+Type: Package
+Title: Functions for calculating the RMST
+Version: 1.0.0
+Date: 2017-05-15
+License: GPL (>= 2)
+Author: Jonathan Wessen <jonathan.wessen@astrazeneca.com>
+Maintainer: Jonathan Wessen <jonathan.wessen@astrazeneca.com>
+Description: Functions for three different approaches are provided in this
+    package. The three approaches are calculating the area under the Kaplan-Meier
+    curve, using pseudovalues with a Generalised Estimating Equation, and fitting
+    a Royston-Parmar model and calculating the area under the predicted survival
+    curves. Each method takes a different approach at calculating the RMST and have
+    their own merits.
+LazyData: TRUE
+Depends:
+    survival,
+    survRM2,
+    pseudo,
+    geepack,
+    flexsurv (>= 0.7.0),
+    numDeriv
+Suggests:
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
+RoxygenNote: 5.0.1
