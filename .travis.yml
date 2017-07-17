@@ -9,7 +9,7 @@ r_github_packages:
   - jimhester/covr
 
 before_install: 
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then sudo tlmgr install framed preprint url; fi 
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then sudo tlmgr install framed titling preprint url; fi 
 
 after_success:
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then echo 'covr::coveralls(quiet=FALSE)' | R --vanilla; fi
