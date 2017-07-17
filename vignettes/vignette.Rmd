@@ -18,8 +18,6 @@ vignette: >
 
 \vspace*{6 mm}
 
-\definecolor{lg}{rgb}{0.97,0.97,0.97}
-
 In randomised clinical trials with a right-censored time-to-event outcome the hazard ratio is often used to compare the efficacy of two or more treatments, however the hazard ratio is only valid when the proportional hazards (PH) assumption is satisfied. The absence of PH means that the hazard ratio between two treatments will vary depending on the time. One solution to this might be to consider an average hazard ratio, however its results can be misleading\cite{royston} and therefore are potentially not a useful summary statistic. \par
 The restricted mean survival time has been proposed as a better summary statistic for when the PH assumption has been violated; Royston P et al.\cite{royston} provide evidence in favour of its use as a primary endpoint in the absence of PH, and also suggest that it could be a useful secondary measure even when the PH assumption is satisfied. The advantages of RMST over traditional metrics, such as hazard ratio, include the following:
 \begin{enumerate}
