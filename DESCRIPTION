@@ -13,8 +13,7 @@ Description: Functions for three different approaches are provided in this
     curves. Each method takes a different approach at calculating the RMST and have
     their own merits.
 LazyData: TRUE
-License: GPL (>= 2) | file LICENSE
-Imports:
+Depends:
     survival,
     survRM2,
     pseudo,

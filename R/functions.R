@@ -47,8 +47,8 @@ modflexsummary <- function(var, sl, object, newdata=NULL, X=NULL, type="survival
       stop("expected X to be a matrix with ", x$ncoveffs, " column", plural, " or a vector with ", x$ncoveffs, " element", plural)
     }
   } else
-    
-    X <- form.model.matrix(object, as.data.frame(newdata))
+    # TRIPLE COLON
+    X <- flexsurv:::form.model.matrix(object, as.data.frame(newdata))
   if (is.null(t))
     t <- sort(unique(dat$Y[,"stop"]))
   if (length(start)==1)
@@ -57,11 +57,11 @@ modflexsummary <- function(var, sl, object, newdata=NULL, X=NULL, type="survival
     stop("length of \"start\" is ",length(start),". Should be 1, or length of \"t\" which is ",length(t))
 
   if (is.null(fn)) {
-    
-    fn <- summary.fns(x, type)
+    # TRIPLE COLON
+    fn <- flexsurv:::summary.fns(x, type)
   }
-  
-  fn <- expand.summfn.args(fn)
+  # TRIPLE COLON
+  fn <- flexsurv:::expand.summfn.args(fn)
   fncall <- list(t,start)
   beta <- if (x$ncovs==0) 0 else var[(sl+1):length(var)]
   if (ncol(X) != length(beta)){
@@ -81,8 +81,8 @@ modflexsummary <- function(var, sl, object, newdata=NULL, X=NULL, type="survival
   else covnames <- rownames(X)
   names(ret) <- covnames
   for (i in 1:nrow(X)) {
-    
-    basepars.mat <- add.covs(x, var[1:sl], beta, X[i,,drop=FALSE], transform=FALSE)
+    # TRIPLE COLON
+    basepars.mat <- flexsurv:::add.covs(x, var[1:sl], beta, X[i,,drop=FALSE], transform=FALSE)
     basepars <- as.list(as.data.frame(basepars.mat))
     fncall[dlist$pars] <- basepars
     for (j in seq_along(x$aux)){
@@ -90,8 +90,8 @@ modflexsummary <- function(var, sl, object, newdata=NULL, X=NULL, type="survival
     }
     y <- do.call(fn, fncall)
     if (ci){
-      
-      res.ci <- cisumm.flexsurvreg(x, t, start, X[i,,drop=FALSE], fn=fn, B=B, cl=cl)
+      # TRIPLE COLON
+      res.ci <- flexsurv:::cisumm.flexsurvreg(x, t, start, X[i,,drop=FALSE], fn=fn, B=B, cl=cl)
       ly <- res.ci[,1]
       uy <-  res.ci[,2]
     }
@@ -376,142 +376,3 @@ SEdif_mult <- function(var, end, dframe, slength, RPfit, modelvcov){
   sqrt(gd %*% modelvcov %*% gd)
 }
 
-#########################################################################################################
-#########################################################################################################
-# Imported function from flexsurv
-
-form.model.matrix <- function (object, newdata) 
-{
-  mfo <- model.frame(object)
-  covnames <- attr(mfo, "covnames")
-  missing.covs <- unique(covnames[!covnames %in% names(newdata)])
-  if (length(missing.covs) > 0) {
-    missing.covs <- sprintf("\"%s\"", missing.covs)
-    plural <- if (length(missing.covs) > 1) 
-      "s"
-    else ""
-    stop(sprintf("Value%s of covariate%s ", plural, plural), 
-         paste(missing.covs, collapse = ", "), " not supplied in \"newdata\"")
-  }
-  tt <- attr(mfo, "terms")
-  Terms <- delete.response(tt)
-  mf <- model.frame(Terms, newdata, xlev = .getXlevels(tt, 
-                                                       mfo))
-  if (!is.null(cl <- attr(Terms, "dataClasses"))) 
-    .checkMFClasses(cl, mf)
-  forms <- object$all.formulae
-  mml <- vector(mode = "list", length = length(object$dlist$pars))
-  names(mml) <- names(forms)
-  forms[[1]] <- delete.response(terms(forms[[1]]))
-  for (i in names(forms)) {
-    mml[[i]] <- model.matrix(forms[[i]], mf)
-  }
-  X <- compress.model.matrices(mml)
-  attr(X, "newdata") <- mf
-  X
-}
-
-summary.fns <- function (x, type) 
-{
-  switch(type, survival = function(t, start, ...) {
-    ret <- (1 - x$dfns$p(t, ...))/(1 - x$dfns$p(start, ...))
-    ret[t < start] <- 1
-    ret
-  }, hazard = function(t, start, ...) {
-    ret <- x$dfns$h(t, ...) * (1 - x$dfns$p(start, ...))
-    ret[t < start] <- 0
-    ret
-  }, cumhaz = function(t, start, ...) {
-    ret <- x$dfns$H(t, ...) - x$dfns$H(start, ...)
-    ret[t < start] <- 0
-    ret
-  })
-}
-
-expand.summfn.args <- function (summfn) 
-{
-  summfn2 <- summfn
-  args <- c(alist(t = , start = ), formals(summfn))
-  formals(summfn2) <- args[!duplicated(names(args))]
-  body(summfn2) <- body(summfn)
-  summfn2
-}
-
-add.covs <- function (x, pars, beta, X, transform = FALSE) 
-{
-  nres <- nrow(X)
-  if (!is.matrix(pars)) 
-    pars <- matrix(pars, nrow = nres, ncol = length(pars), 
-                   byrow = TRUE)
-  if (!is.matrix(beta)) 
-    beta <- matrix(beta, nrow = 1)
-  for (j in seq(along = x$dlist$pars)) {
-    covinds <- x$mx[[x$dlist$pars[j]]]
-    if (length(covinds) > 0) {
-      pars[, j] <- pars[, j] + beta[, covinds] %*% t(X[, 
-                                                       covinds, drop = FALSE])
-    }
-    if (!transform) 
-      pars[, j] <- x$dlist$inv.transforms[[j]](pars[, j])
-  }
-  colnames(pars) <- x$dlist$pars
-  pars
-}
-
-cisumm.flexsurvreg <- function (x, t, start, X, fn, B = 1000, cl = 0.95) 
-{
-  if (any(is.na(x$res[, 2])) || (B == 0)) 
-    ret <- array(NA, dim = c(length(t), 2))
-  else {
-    ret <- normbootfn.flexsurvreg(x = x, t = t, start = start, 
-                                  X = X, fn = fn, B = B)
-    ret <- apply(ret, c(1, 3), function(x) quantile(x, c((1 - 
-                                                            cl)/2, 1 - (1 - cl)/2), na.rm = TRUE))
-    ret <- t(ret[, 1, ])
-  }
-  ret
-}
-
-form.model.matrix <- function (object, newdata) 
-{
-  mfo <- model.frame(object)
-  covnames <- attr(mfo, "covnames")
-  missing.covs <- unique(covnames[!covnames %in% names(newdata)])
-  if (length(missing.covs) > 0) {
-    missing.covs <- sprintf("\"%s\"", missing.covs)
-    plural <- if (length(missing.covs) > 1) 
-      "s"
-    else ""
-    stop(sprintf("Value%s of covariate%s ", plural, plural), 
-         paste(missing.covs, collapse = ", "), " not supplied in \"newdata\"")
-  }
-  tt <- attr(mfo, "terms")
-  Terms <- delete.response(tt)
-  mf <- model.frame(Terms, newdata, xlev = .getXlevels(tt, 
-                                                       mfo))
-  if (!is.null(cl <- attr(Terms, "dataClasses"))) 
-    .checkMFClasses(cl, mf)
-  forms <- object$all.formulae
-  mml <- vector(mode = "list", length = length(object$dlist$pars))
-  names(mml) <- names(forms)
-  forms[[1]] <- delete.response(terms(forms[[1]]))
-  for (i in names(forms)) {
-    mml[[i]] <- model.matrix(forms[[i]], mf)
-  }
-  X <- compress.model.matrices(mml)
-  attr(X, "newdata") <- mf
-  X
-}
-
-compress.model.matrices <- function (mml) 
-{
-  cbind.drop.intercept <- function(...) do.call("cbind", lapply(list(...), 
-                                                                function(x) x[, -1, drop = FALSE]))
-  X <- do.call("cbind.drop.intercept", mml)
-  loc.cnames <- colnames(mml[[1]])[-1]
-  anc.cnames <- unlist(mapply(function(x, y) sprintf("%s(%s)", 
-                                                     x, y), names(mml[-1]), lapply(mml[-1], function(x) colnames(x)[-1])))
-  cnames <- c(loc.cnames, anc.cnames)
-  colnames(X) <- cnames
-  X
-}
