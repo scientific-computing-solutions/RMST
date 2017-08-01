@@ -516,3 +516,24 @@ compress.model.matrices <- function (mml)
   colnames(X) <- cnames
   X
 }
+
+normbootfn.flexsurvreg <- function (x, t, start, newdata = NULL, X = NULL, fn, B) 
+{
+  sim <- normboot.flexsurvreg(x, B, newdata = newdata, X = X)
+  X <- attr(sim, "X")
+  if (!is.list(sim)) 
+    sim <- list(sim)
+  ret <- array(NA_real_, dim = c(nrow(X), B, length(t)))
+  for (k in 1:nrow(X)) {
+    for (i in seq(length = B)) {
+      fncall <- list(t, start)
+      for (j in seq(along = x$dlist$pars)) fncall[[x$dlist$pars[j]]] <- sim[[k]][i, 
+                                                                                 j]
+      for (j in seq_along(x$aux)) fncall[[names(x$aux)[j]]] <- x$aux[[j]]
+      ret[k, i, ] <- do.call(fn, fncall)
+    }
+  }
+  if (nrow(X) == 1) 
+    ret[1, , , drop = FALSE]
+  else ret
+}
