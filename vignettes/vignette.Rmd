@@ -38,6 +38,7 @@ For each method it is possible to specify the truncation time and the alpha leve
 
 ```{r fig1, echo=FALSE, message=FALSE}
 library(RMST)
+library(survRM2)
 D <- rmst2.sample.data()
 plot.rmst2=function(x, xlab="", ylab="", col="black", col.RMST="gray80", col.RMTL="orange",density=80, angle=85,...){
   
