@@ -9,6 +9,7 @@
 ##' @param knots the number of internal knots to fit the Royston-Parmar model with.
 ##' @examples
 ##' # Load in an example data set
+##' library(survRM2)
 ##' D <- rmst2.sample.data()
 ##'
 ##' # Calculate the RMST based on the Royston-Parmar model with two knots

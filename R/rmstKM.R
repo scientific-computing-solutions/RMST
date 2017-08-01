@@ -8,6 +8,7 @@
 ##' @param alpha The default is 0.05. (1-alpha) confidence intervals are reported.
 ##' @examples
 ##' # Load in an example data set
+##' library(survRM2)
 ##' D <- rmst2.sample.data()
 ##'
 ##' # Calculate the RMST based on the area under the KM approach
