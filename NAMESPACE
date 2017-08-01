@@ -8,7 +8,8 @@ export(rmstPseudo)
 export(rmstRP)
 importFrom("stats", "gaussian", "integrate", "model.extract",
              "model.frame", "model.matrix", "pchisq", "pnorm", "qnorm",
-             "relevel", "sd", "terms", "vcov")
+             "relevel", "sd", "terms", "vcov", ".checkMFClasses", ".getXlevels",
+             "delete.response", "quantile")
 importFrom("utils", "head")
 importFrom("survival","is.Surv","Surv","strata","survfit")
 import("flexsurv")
