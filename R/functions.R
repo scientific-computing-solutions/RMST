@@ -127,6 +127,7 @@ modflexsummary <- function(var, sl, object, newdata=NULL, X=NULL, type="survival
 ##' The RMST is estimate which can be found by calculating the area under the survival curve. This function facilitates the implementation the three most discussed approaches in current literature. For further details on how the RMST is calculated for each method see the document for the appropriate method, i.e. \code{?rmstKM}, \code{?rmstPseudo}, or \code{?rmstRP}.
 ##' @examples
 ##' # Load in an example data set
+##' library(survRM2)
 ##' D <- rmst2.sample.data()
 ##'
 ##' # Calculate the RMST using pseudovalues
