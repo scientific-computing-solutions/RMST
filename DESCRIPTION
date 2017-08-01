@@ -4,8 +4,8 @@ Title: Functions for calculating the RMST
 Version: 1.0.0
 Date: 2017-05-15
 License: GPL (>= 2)
-Author: Jonathan Wessen <jonathan.wessen@astrazeneca.com>
-Maintainer: Jonathan Wessen <jonathan.wessen@astrazeneca.com>
+Author: Jonathan Wessen <jonathanwessen@gmail.com>
+Maintainer: Jonathan Wessen <jonathanwessen@gmail.com>
 Description: Functions for three different approaches are provided in this
     package. The three approaches are calculating the area under the Kaplan-Meier
     curve, using pseudovalues with a Generalised Estimating Equation, and fitting
