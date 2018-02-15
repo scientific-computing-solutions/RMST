@@ -100,22 +100,21 @@ rmstRP <- function (formula, data, trunc, alpha = 0.05, knots = 2) {
   RM.est <- lapply(df, RMST_mult, var=var, end=trunc, slength=slength, RPfit=RPfit)
   se.est <- lapply(df, SE_mult,   var=var, end=trunc, slength=slength, RPfit=RPfit, modelvcov=modelvcov)
 
-  RMout <- data.frame(" "        = c(armlab[1],armlab[2]),
-                      "RMST"     = unlist(RM.est),
-                      "SE"       = unlist(se.est),
-                      "Lower CI" = unlist(RM.est) - qnorm(1-alpha/2)*unlist(se.est),
-                      "Upper CI" = unlist(RM.est) + qnorm(1-alpha/2)*unlist(se.est))
+  RMout <- data.frame("Est."     = unlist(RM.est),
+                      "se"       = unlist(se.est),
+                      "lower ." = unlist(RM.est) - qnorm(1-alpha/2)*unlist(se.est),
+                      "upper ." = unlist(RM.est) + qnorm(1-alpha/2)*unlist(se.est))
 
-  names(RMout) <- c("","RMST","SE","Lower CI","Upper CI")
+  names(RMout) <- c("Est.","se","lower .","upper .")
 
   dif    <- diffunc_mult(var, trunc, df, slength=slength, RPfit=RPfit)
   se.dif <- SEdif_mult(var, trunc, df, slength=slength, RPfit=RPfit, modelvcov=modelvcov)
 
-  RMSTdif <- data.frame("Difference" = dif,
-                        "SE" = se.dif,
-                        "Lower CI" = dif - qnorm(1-alpha/2)*se.dif,
-                        "Upper CI" = dif + qnorm(1-alpha/2)*se.dif,
-                        "p-value"   = 1 - pchisq((dif/se.dif)^2, df = 1))
+  RMSTdif <- data.frame("Est." = dif,
+                        "se" = se.dif,
+                        "lower ." = dif - qnorm(1-alpha/2)*se.dif,
+                        "upper ." = dif + qnorm(1-alpha/2)*se.dif,
+                        "p"   = 1 - pchisq((dif/se.dif)^2, df = 1))
 }
 
   result <- list("RMST"=RMout,"diff"=RMSTdif, call=Call)

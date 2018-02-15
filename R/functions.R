@@ -369,7 +369,7 @@ SE_mult <- function(var, end, dframe, slength, RPfit, modelvcov){
 }
 
 diffunc_mult <- function(var, end, dframe, slength, RPfit) {
-  abs(integrate(surv_mult,0,end,dframe=dframe[[1]],var=var, slength=slength, RPfit=RPfit)$value -
+  (integrate(surv_mult,0,end,dframe=dframe[[1]],var=var, slength=slength, RPfit=RPfit)$value -
       integrate(surv_mult,0,end,dframe=dframe[[2]],var=var, slength=slength, RPfit=RPfit)$value )}
 
 SEdif_mult <- function(var, end, dframe, slength, RPfit, modelvcov){
