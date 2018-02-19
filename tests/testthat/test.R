@@ -71,8 +71,8 @@ test_that("UseCaseRP",{
     sqrt(gd %*% modelvcov %*% gd)
   }
 
-  expect_equal(integrate(surv1,0,10,arm=0)$value,as.numeric(out5[[1]][1,2])) # RMST in arm 0
-  expect_equal(integrate(surv1,0,10,arm=1)$value,as.numeric(out5[[1]][2,2])) # RMST in arm 1
+  expect_equal(integrate(surv1,0,10,arm=0)$value,as.numeric(out5[[1]][1,1])) # RMST in arm 0
+  expect_equal(integrate(surv1,0,10,arm=1)$value,as.numeric(out5[[1]][2,1])) # RMST in arm 1
   expect_equal(as.numeric(SEdif(var,10)), as.numeric(out5[[2]][2]))         # SE of difference
 
   out8 <- rmst(Surv(surv, event) ~ arm, data=dat[dat$arm==0,], trunc=10, alpha=0.05, method="RP")
@@ -86,13 +86,13 @@ test_that("RPWeibull",{
   surv <- function(x) unlist(summary(model,newdata=data.frame("arm"=0),t=x,ci=F)[[1]]["est"])
 
   expect_equal(
-  rmst(Surv(surv, event) ~ arm, data=dat, trunc=5, alpha=0.05, method="RP", knots=0)[[1]][1,2],
+  rmst(Surv(surv, event) ~ arm, data=dat, trunc=5, alpha=0.05, method="RP", knots=0)[[1]][1,1],
   integrate(surv,0,5)$value,
   tolerance=1e-6
   )
 })
 
-test_that("KMequalRP",{
+test_that("KMequalpseudo",{
   expect_equal(
     rmst(Surv(surv, event) ~ arm, data=dat, trunc=10, alpha=0.05, method="KM")[[2]][1],
     as.numeric(rmst(Surv(surv, event) ~ arm, data=dat, trunc=10, alpha=0.05, method="pseudo")[[2]][1])
